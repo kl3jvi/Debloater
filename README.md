@@ -4,7 +4,7 @@
 
 Debloater is a robust Jetpack Compose based Android application that helps you manage the installed apps on your device. The app lists all the installed packages and provides an option to uninstall them directly from the interface. The application also includes a powerful filtering feature that allows you to search packages based on their names.
 
-![Debloater Screenshot](screenshot_placeholder.png)
+![Debloater Screenshot](assets/ssh.png)
 
 ## Features
 
