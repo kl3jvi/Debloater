@@ -19,6 +19,7 @@ repositories {
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation("dev.mobile:dadb:1.2.6")
+    implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.0.0")
 }
 
 tasks.withType<KotlinCompile> {
