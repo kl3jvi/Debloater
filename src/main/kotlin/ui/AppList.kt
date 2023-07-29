@@ -14,29 +14,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.adb.AdbService.getPackages
+
+enum class SortOrder { Ascending, Descending, None }
 
 @Composable
 fun AppList() {
     var searchText by remember { mutableStateOf("") }
+    var sortOrder by remember { mutableStateOf(SortOrder.Ascending) }
+    val expanded = remember { mutableStateOf(false) }
 
-    val items = listOf(
-        "com.kl3jvi.animity",
-        "com.roblox.client",
-        "com.outfit7.mytalkingtomfriends",
-        "com.instagram.android",
-        "com.microsoft.outlooklite",
-        "com.easilydo.mail",
-        "al.myvodafone.android",
-        "com.vyroai.aiart",
-        "com.example.package5",
-        "com.example.package1",
-        "com.example.package2",
-        "com.example.package3",
-        "com.example.package4",
-        "com.example.package5"
-    )
+    val items = getPackages("emulator-5554")
+    val checkedItems = remember {
+        mutableStateMapOf<String, Boolean>().also { map ->
+            items.forEach { appName ->
+                map[appName] = false
+            }
+        }
+    }
 
-    val filteredItems = items.filter { it.contains(searchText, ignoreCase = true) }
+    val filteredItems = items
+        .filter { it.contains(searchText, ignoreCase = true) }
+        .sortedWith(compareBy<String> { it }.let { if (sortOrder == SortOrder.Descending) it.reversed() else it })
 
     Column {
         TextField(
@@ -45,14 +44,27 @@ fun AppList() {
             label = { Text("Search packages") },
             singleLine = true,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(1f)
                 .padding(8.dp)
         )
+
 
         LazyColumn {
             if (filteredItems.isNotEmpty()) {
                 items(filteredItems) { item ->
-                    MyAppRow(item, false, {}, {})
+                    MyAppRow(
+                        appName = item,
+                        checked = checkedItems[item] ?: false,
+                        onCheckedChange = { isChecked ->
+                            checkedItems[item] = isChecked
+                        },
+                        onUninstall = {
+                            // Here you can perform the actual uninstallation.
+                            // Note that Android won't allow you to silently uninstall applications from your app,
+                            // you would typically launch an intent to the system app settings screen
+                            // where the user can manually uninstall the app.
+                        }
+                    )
                 }
             } else {
                 item {
@@ -67,7 +79,6 @@ fun AppList() {
         }
     }
 }
-
 
 @Composable
 fun MyAppRow(
@@ -98,7 +109,11 @@ fun MyAppRow(
                 .weight(1f) // This makes the text expand as much as possible
         )
 
-        Button(onClick = onUninstall) {
+
+        Button(
+            onClick = onUninstall,
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
             Text("Uninstall")
         }
     }
