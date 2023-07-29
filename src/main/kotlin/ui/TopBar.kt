@@ -15,15 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dadb.Dadb
+import data.adb.AdbService
 import java.awt.Desktop
 import java.net.URI
 
 @Composable
 fun TopBar(reboot: (String) -> Unit) {
     TopAppBar {
-        val options = Dadb.list().map(Any::toString)
-        val connectedDevice = Dadb.discover().toString()
+        val options = AdbService.deviceList().map(Any::toString)
+        val connectedDevice = AdbService.deviceList().toString()
         var expanded by remember { mutableStateOf(false) }
         var selectedOption by remember { mutableStateOf(connectedDevice ?: options[0]) }
 
@@ -61,6 +61,7 @@ fun TopBar(reboot: (String) -> Unit) {
                     DropdownMenuItem(onClick = {
                         selectedOption = label
                         expanded = false
+                        AdbService.rebootDevice(selectedOption)
                     }) {
                         Text(text = label)
                     }
