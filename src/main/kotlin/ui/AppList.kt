@@ -60,10 +60,6 @@ fun AppList() {
                         },
                         onUninstall = {
                             uninstallSelected(*checkedItems.keys.toTypedArray())
-                            // Here you can perform the actual uninstallation.
-                            // Note that Android won't allow you to silently uninstall applications from your app,
-                            // you would typically launch an intent to the system app settings screen
-                            // where the user can manually uninstall the app.
                         }
                     )
                 }

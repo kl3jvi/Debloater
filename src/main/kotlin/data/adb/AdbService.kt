@@ -20,7 +20,7 @@ object AdbService {
 
     fun uninstallSelected(vararg appList: String) {
         val currentDevice = deviceList().firstOrNull { it.toString() == selectedDevice }
-        appList.forEach { currentDevice?.uninstall(it) }
+        appList.map { currentDevice?.uninstall(it) }
     }
 
     fun isEmulator(): Boolean {
