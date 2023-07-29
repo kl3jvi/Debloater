@@ -15,16 +15,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.adb.AdbService.getPackages
+import data.adb.AdbService.uninstallSelected
 
 enum class SortOrder { Ascending, Descending, None }
 
 @Composable
 fun AppList() {
     var searchText by remember { mutableStateOf("") }
-    var sortOrder by remember { mutableStateOf(SortOrder.Ascending) }
+    val sortOrder by remember { mutableStateOf(SortOrder.Ascending) }
     val expanded = remember { mutableStateOf(false) }
 
-    val items = getPackages("emulator-5554")
+    val items = getPackages()
     val checkedItems = remember {
         mutableStateMapOf<String, Boolean>().also { map ->
             items.forEach { appName ->
@@ -48,7 +49,6 @@ fun AppList() {
                 .padding(8.dp)
         )
 
-
         LazyColumn {
             if (filteredItems.isNotEmpty()) {
                 items(filteredItems) { item ->
@@ -59,6 +59,7 @@ fun AppList() {
                             checkedItems[item] = isChecked
                         },
                         onUninstall = {
+                            uninstallSelected(*checkedItems.keys.toTypedArray())
                             // Here you can perform the actual uninstallation.
                             // Note that Android won't allow you to silently uninstall applications from your app,
                             // you would typically launch an intent to the system app settings screen
@@ -90,10 +91,10 @@ fun MyAppRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)
+            .padding(horizontal = 8.dp, vertical = 2.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colors.onPrimary)
-            .border(1.dp, Color.White),
+            .border(1.dp, Color(0xFFd0d7de))
+            .background(MaterialTheme.colors.onPrimary),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -108,7 +109,6 @@ fun MyAppRow(
                 .padding(start = 8.dp)
                 .weight(1f) // This makes the text expand as much as possible
         )
-
 
         Button(
             onClick = onUninstall,

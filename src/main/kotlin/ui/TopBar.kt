@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import data.adb.AdbService
 import data.adb.AdbService.deviceList
 import java.awt.Desktop
 import java.net.URI
@@ -24,10 +23,8 @@ import java.net.URI
 fun TopBar(reboot: (String) -> Unit) {
     TopAppBar {
         val options = deviceList().map(Any::toString)
-
         var expanded by remember { mutableStateOf(false) }
         var selectedOption by remember { mutableStateOf(options[0]) }
-
 
         Button(
             onClick = { reboot(selectedOption) },
@@ -41,12 +38,12 @@ fun TopBar(reboot: (String) -> Unit) {
         }
 
         Column(
-            modifier = Modifier.padding(start = 10.dp),
+            modifier = Modifier.padding(start = 10.dp)
         ) {
             Button(
                 onClick = { expanded = true },
                 border = BorderStroke(1.dp, Color.White),
-                elevation = ButtonDefaults.elevation(defaultElevation = 10.dp),
+                elevation = ButtonDefaults.elevation(defaultElevation = 10.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(selectedOption)
@@ -56,7 +53,7 @@ fun TopBar(reboot: (String) -> Unit) {
 
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
+                onDismissRequest = { expanded = false }
             ) {
                 options.forEach { label ->
                     DropdownMenuItem(onClick = {
@@ -76,9 +73,9 @@ fun TopBar(reboot: (String) -> Unit) {
         IconButton(
             onClick = {
                 Desktop.getDesktop().browse(URI("https://github.com/kl3jvi/Debloater"))
-            }) {
+            }
+        ) {
             Icon(imageVector = Icons.Default.Gite, contentDescription = "Person Icon")
-
         }
 
         // The version number
