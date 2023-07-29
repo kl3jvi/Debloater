@@ -20,14 +20,14 @@ fun AppList() {
     var searchText by remember { mutableStateOf("") }
 
     val items = listOf(
-        "com.kl3jvi.android",
-        "com.naruot.festa",
-        "com.pesto.ckemi",
-        "org.ckemiii.klejvi",
-        "com.example.package1",
-        "com.example.package2",
-        "com.example.package3",
-        "com.example.package4",
+        "com.kl3jvi.animity",
+        "com.roblox.client",
+        "com.outfit7.mytalkingtomfriends",
+        "com.instagram.android",
+        "com.microsoft.outlooklite",
+        "com.easilydo.mail",
+        "al.myvodafone.android",
+        "com.vyroai.aiart",
         "com.example.package5",
         "com.example.package1",
         "com.example.package2",
