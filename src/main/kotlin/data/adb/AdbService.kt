@@ -16,14 +16,13 @@ object AdbService {
             ?.shell("pm list packages | cut -f 2 -d \":\"\n")?.allOutput?.parsePackages() ?: emptyList()
     }
 
-    fun uninstallSelected(vararg appList: String): List<Boolean> {
+    fun uninstallSelected(vararg appList: String): List<Pair<String, Boolean>> {
         val currentDevice = deviceList().firstOrNull { it.getDeviceModel() == selectedDevice }
         return appList.map {
-            runCatching { currentDevice?.uninstall(packageName = it) }
-                .fold(
-                    onSuccess = { true },
-                    onFailure = { false }
-                )
+            it to runCatching { currentDevice?.uninstall(packageName = it) }.fold(
+                onSuccess = { true },
+                onFailure = { false }
+            )
         }
     }
 
@@ -44,7 +43,8 @@ object AdbService {
      */
     fun Dadb?.getDeviceModel(): Pair<String, String> {
         return Pair(
-            this?.toString().orEmpty(), this?.shell("getprop ro.product.model")?.allOutput?.trim() ?: "Unknown device"
+            this?.toString().orEmpty(),
+            this?.shell("getprop ro.product.model")?.allOutput?.trim() ?: "Unknown device"
         )
     }
 
