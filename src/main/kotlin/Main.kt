@@ -12,6 +12,7 @@ import data.adb.AdbService.deviceList
 import data.adb.AdbService.getDeviceModel
 import data.adb.AdbService.rebootDevice
 import ui.AppList
+import ui.ControlButtonsRow
 import ui.TopBar
 
 @Composable
@@ -41,6 +42,8 @@ fun App() {
                 }
             )
             AppList(selectedDevice)
+
+            ControlButtonsRow({}, {}, {})
         }
     }
 }

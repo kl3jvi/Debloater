@@ -1,6 +1,7 @@
 package ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Gite
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import data.adb.AdbService.deviceList
 import data.adb.AdbService.getDeviceModel
@@ -123,7 +124,11 @@ fun TopBar(
                 Desktop.getDesktop().browse(URI("https://github.com/kl3jvi/Debloater"))
             }
         ) {
-            Icon(imageVector = Icons.Default.Gite, contentDescription = "Person Icon")
+            Image(
+                painter = painterResource("github-mark.svg"),
+                contentDescription = "Sample",
+                modifier = Modifier.padding(15.dp)
+            )
         }
 
         // The version number
