@@ -16,18 +16,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.adb.AdbService.deviceList
+import data.adb.AdbService.getDeviceModel
+import data.adb.AdbService.getUsers
 import java.awt.Desktop
 import java.net.URI
 
 @Composable
-fun TopBar(reboot: (String) -> Unit) {
+fun TopBar(
+    update: (String) -> Unit,
+    updateUser: (String) -> Unit,
+    reboot: (String) -> Unit
+) {
     TopAppBar {
-        val options = deviceList().map(Any::toString)
-        var expanded by remember { mutableStateOf(false) }
-        var selectedOption by remember { mutableStateOf(options[0]) }
+        val devices = deviceList().map { it.getDeviceModel() }
+        var selectedDevice by remember { mutableStateOf(devices[0]) }
+        var deviceExpanded by remember { mutableStateOf(false) }
+
+        val users = getUsers(selectedDevice.second)
+        var selectedUser by remember { mutableStateOf(users[0]) }
+        var userExpanded by remember { mutableStateOf(false) }
 
         Button(
-            onClick = { reboot(selectedOption) },
+            onClick = { reboot(selectedDevice.second) },
             border = BorderStroke(1.dp, Color.White),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0x50CBE6FF)),
             elevation = ButtonDefaults.elevation(defaultElevation = 10.dp),
@@ -37,31 +47,69 @@ fun TopBar(reboot: (String) -> Unit) {
             Text(text = "Reboot")
         }
 
-        Column(
+        Row(
             modifier = Modifier.padding(start = 10.dp)
         ) {
-            Button(
-                onClick = { expanded = true },
-                border = BorderStroke(1.dp, Color.White),
-                elevation = ButtonDefaults.elevation(defaultElevation = 10.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(selectedOption)
-                    Icon(Icons.Filled.ArrowDropDown, contentDescription = "Open dropdown")
+            Column {
+                Button(
+                    onClick = {
+                        deviceExpanded = true
+                        update(selectedDevice.second)
+                        updateUser(selectedUser)
+                    },
+                    border = BorderStroke(1.dp, Color.White),
+                    elevation = ButtonDefaults.elevation(defaultElevation = 10.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(selectedDevice.second)
+                        Icon(Icons.Filled.ArrowDropDown, contentDescription = "Open dropdown")
+                    }
+                }
+
+                DropdownMenu(
+                    expanded = deviceExpanded,
+                    onDismissRequest = { deviceExpanded = false }
+                ) {
+                    devices.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            selectedDevice = label
+                            deviceExpanded = false
+                            // AdbService.rebootDevice(selectedOption)
+                        }) {
+                            Text(text = label.second)
+                        }
+                    }
                 }
             }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                options.forEach { label ->
-                    DropdownMenuItem(onClick = {
-                        selectedOption = label
-                        expanded = false
-//                        AdbService.rebootDevice(selectedOption)
-                    }) {
-                        Text(text = label)
+            Column {
+                Button(
+                    onClick = {
+                        userExpanded = true
+                        updateUser(selectedUser)
+                    },
+                    border = BorderStroke(1.dp, Color.White),
+                    elevation = ButtonDefaults.elevation(defaultElevation = 10.dp),
+                    modifier = Modifier.padding(start = 10.dp)
+
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(selectedUser)
+                        Icon(Icons.Filled.ArrowDropDown, contentDescription = "Open dropdown")
+                    }
+                }
+
+                DropdownMenu(
+                    expanded = userExpanded,
+                    onDismissRequest = { userExpanded = false }
+                ) {
+                    users.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            selectedUser = label
+                            userExpanded = false
+                        }) {
+                            Text(text = label)
+                        }
                     }
                 }
             }

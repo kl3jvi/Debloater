@@ -3,9 +3,14 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import data.adb.AdbService.deviceList
+import data.adb.AdbService.getDeviceModel
+import data.adb.AdbService.rebootDevice
 import ui.AppList
 import ui.TopBar
 
@@ -23,11 +28,19 @@ fun App() {
             onBackground = Color(0xFF1A1C1E)
         )
     ) {
+        val selectedDevice = remember { mutableStateOf(deviceList().firstOrNull()?.getDeviceModel()?.second ?: "") }
+        val selectedUser = remember { mutableStateOf(deviceList().firstOrNull()?.getDeviceModel()?.second ?: "") }
         Column {
-            TopBar {
-//                AdbService.rebootDevice(it)
-            }
-            AppList()
+            TopBar(
+                update = {
+                    selectedDevice.value = it
+                },
+                updateUser = {},
+                reboot = {
+                    rebootDevice(it)
+                }
+            )
+            AppList(selectedDevice)
         }
     }
 }
